@@ -1,0 +1,21 @@
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.2.0'
+    }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "5.0.7"
+}
+
+
+apply plugin: "org.flywaydb.flyway"
+
+flyway {
+    url = 'jdbc:postgresql://127.0.0.1:5432/rss'
+    driver = 'org.postgresql.Driver'
+    user = 'postgres'
+    password = 'password1'
+    schemas = ['rss']
+    locations = ['filesystem:migrations/sql']
+}

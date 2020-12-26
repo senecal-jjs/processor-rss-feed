@@ -1,0 +1,5 @@
+rootProject.name = 'processor-rss-feed'
+
+include "service"
+include "migrations"
+
