@@ -7,7 +7,7 @@ import security.Role
 data class Profile(
     private val username: String,
     private val password: String,
-    private val authorities: List<Role>
+    private val authorities: MutableList<Role>
 ) : UserDetails {
     override fun getPassword(): String {
         return password
@@ -34,7 +34,7 @@ data class Profile(
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+        return authorities
     }
 
 }

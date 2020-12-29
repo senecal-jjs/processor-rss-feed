@@ -3,5 +3,9 @@ package security
 import org.springframework.security.core.GrantedAuthority
 
 enum class Role : GrantedAuthority {
-    USER
+    USER {
+        override fun getAuthority(): String {
+            return "USER"
+        }
+    }
 }

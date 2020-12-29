@@ -20,6 +20,9 @@ dependencies {
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+    // postgres
+    implementation "org.postgresql:postgresql:$postgres_version"
+
     // exposed orm
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
 
@@ -29,6 +32,12 @@ dependencies {
 
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: "jjwt_version"
+
+    // Jackson
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.9"
 
     // Spring
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "$springboot_version"
