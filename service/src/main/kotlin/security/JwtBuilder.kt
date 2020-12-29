@@ -1,8 +1,12 @@
 package security
 
 import config.JWTProperties
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.SignatureException
+import io.jsonwebtoken.UnsupportedJwtException
 import model.Profile
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -27,4 +31,34 @@ class JwtBuilder(private val jwtProperties: JWTProperties) {
             .compact()
     }
 
+    fun getUserIdFromToken(token: String): UUID {
+        return Jwts.parser()
+            .setSigningKey(jwtProperties.privateKey)
+            .parseClaimsJws(token)
+            .body
+            .let {
+                UUID.fromString(it.subject)
+            }
+    }
+
+    fun isTokenValid(token: String): Boolean {
+        try {
+            Jwts.parser()
+                .setSigningKey(jwtProperties.privateKey)
+                .parseClaimsJws(token)
+
+            return true
+        } catch (e: SignatureException) {
+            logger.error("Invalid JWT signature");
+        } catch (e: MalformedJwtException) {
+            logger.error("Invalid JWT token");
+        } catch (e: ExpiredJwtException) {
+            logger.error("Expired JWT token");
+        } catch (e: UnsupportedJwtException) {
+            logger.error("Unsupported JWT token");
+        } catch (e: IllegalArgumentException) {
+            logger.error("JWT claims string is empty.");
+        }
+        return false
+    }
 }

@@ -19,6 +19,7 @@ object Profile : Table("profile") {
             .firstOrNull()
             ?.let {
                 model.Profile(
+                    id = it[id],
                     username = it[username],
                     password = it[password],
                     authorities = it[authority].roles
