@@ -3,8 +3,10 @@ package model
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import security.Role
+import java.util.UUID
 
 data class Profile(
+    private val id: UUID,
     private val username: String,
     private val password: String,
     private val authorities: MutableList<Role>
@@ -37,4 +39,7 @@ data class Profile(
         return authorities
     }
 
+    fun getId(): UUID {
+        return id
+    }
 }
