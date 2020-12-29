@@ -1,6 +1,7 @@
 package security
 
 import config.JWTProperties
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
@@ -25,6 +26,8 @@ class JwtBuilder(private val jwtProperties: JWTProperties) {
 
         return Jwts.builder()
             .setSubject(userPrincipal.getId().toString())
+            .claim("USERNAME", userPrincipal.username)
+            .claim("ROLES", userPrincipal.authorities)
             .setIssuedAt(Date())
             .setExpiration(expiryDate)
             .signWith(SignatureAlgorithm.HS512, jwtProperties.privateKey)

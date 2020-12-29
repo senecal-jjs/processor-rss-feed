@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import security.Role
+import java.util.UUID
 
 object Profile : Table("profile") {
     val id = uuid("id").primaryKey()
@@ -20,6 +21,20 @@ object Profile : Table("profile") {
             ?.let {
                 model.Profile(
                     id = it[id],
+                    username = it[username],
+                    password = it[password],
+                    authorities = it[authority].roles
+                )
+            }
+    }
+
+    fun getUserById(userId: UUID): model.Profile? = transaction {
+        Profile
+            .select { id eq userId }
+            .firstOrNull()
+            ?.let {
+                model.Profile(
+                    id = it[Profile.id],
                     username = it[username],
                     password = it[password],
                     authorities = it[authority].roles
