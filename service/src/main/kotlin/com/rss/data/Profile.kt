@@ -10,8 +10,8 @@ import java.util.UUID
 
 object Profile : Table("profile") {
     val id = uuid("id").primaryKey()
-    val username = varchar("username", 30)
-    val password = varchar("password", 30)
+    val username = varchar("username", 50)
+    val password = varchar("password", 300)
     val authority = Profile.registerColumn<Authority>("authority", object : JsonBColumnType<Authority>() {})
 
     fun getUserByUsername(inUsername: String): com.rss.model.Profile? = transaction {
