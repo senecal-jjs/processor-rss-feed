@@ -1,8 +1,8 @@
-package model
+package com.rss.model
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import security.Role
+import com.rss.security.Role
 import java.util.UUID
 
 data class Profile(

@@ -1,4 +1,4 @@
-package security
+package com.rss.security
 
 import org.springframework.security.core.GrantedAuthority
 

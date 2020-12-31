@@ -1,9 +1,9 @@
-package web
+package com.rss.web
 
-import api.JwtAuthenticationResponse
-import api.LoginRequest
-import api.SignUpRequest
-import data.Profile
+import com.rss.api.JwtAuthenticationResponse
+import com.rss.api.LoginRequest
+import com.rss.api.SignUpRequest
+import com.rss.data.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import security.JwtBuilder
-import kotlin.math.sign
+import com.rss.security.JwtBuilder
 
 @RestController
 @RequestMapping("api/v1/auth")

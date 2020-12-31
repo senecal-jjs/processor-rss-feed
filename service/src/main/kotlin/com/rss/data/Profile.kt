@@ -1,11 +1,11 @@
-package data
+package com.rss.data
 
-import data.json.JsonBColumnType
+import com.rss.data.json.JsonBColumnType
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import security.Role
+import com.rss.security.Role
 import java.util.UUID
 
 object Profile : Table("profile") {
@@ -14,12 +14,12 @@ object Profile : Table("profile") {
     val password = varchar("password", 30)
     val authority = Profile.registerColumn<Authority>("authority", object : JsonBColumnType<Authority>() {})
 
-    fun getUserByUsername(inUsername: String): model.Profile? = transaction {
+    fun getUserByUsername(inUsername: String): com.rss.model.Profile? = transaction {
         Profile
             .select { username eq inUsername }
             .firstOrNull()
             ?.let {
-                model.Profile(
+                com.rss.model.Profile(
                     id = it[id],
                     username = it[username],
                     password = it[password],
@@ -28,13 +28,13 @@ object Profile : Table("profile") {
             }
     }
 
-    fun getUserById(userId: UUID): model.Profile? = transaction {
+    fun getUserById(userId: UUID): com.rss.model.Profile? = transaction {
         Profile
             .select { id eq userId }
             .firstOrNull()
             ?.let {
-                model.Profile(
-                    id = it[Profile.id],
+                com.rss.model.Profile(
+                    id = it[id],
                     username = it[username],
                     password = it[password],
                     authorities = it[authority].roles

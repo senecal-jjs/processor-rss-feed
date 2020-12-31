@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
-group 'org.example'
+group 'com.rss'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -32,6 +32,9 @@ dependencies {
 
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: "$jjwt_version"
+
+    // hikari
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: "$hikari_version"
 
     // Jackson
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"

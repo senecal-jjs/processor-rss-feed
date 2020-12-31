@@ -1,6 +1,6 @@
-package api
+package com.rss.api
 
-data class LoginRequest(
+data class SignUpRequest(
     val username: String,
     val password: String
 )

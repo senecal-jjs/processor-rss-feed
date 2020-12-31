@@ -1,4 +1,4 @@
-package security
+package com.rss.security
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

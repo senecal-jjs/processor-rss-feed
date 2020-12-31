@@ -1,4 +1,4 @@
-package config
+package com.rss.config
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
@@ -16,4 +16,32 @@ open class JWTProperties {
     @NotNull open lateinit var url: String
     @NotNull open lateinit var endpoint: String
     @NotNull open var expiresInMinutes: Int = 60
+}
+
+@ConfigurationProperties(prefix = "redis")
+@Validated
+open class RedisProperties {
+    @NotNull
+    open lateinit var host: String
+    @NotNull
+    open lateinit var port: String
+    @NotNull
+    open lateinit var connectionPoolSize: String
+}
+
+@ConfigurationProperties(prefix = "database")
+@Validated
+open class DatabaseProperties {
+    @NotNull
+    open lateinit var name: String
+    @NotNull
+    open lateinit var username: String
+    @NotNull
+    open lateinit var password: String
+    @NotNull
+    open lateinit var hostname: String
+    @NotNull
+    open lateinit var port: Integer
+    @NotNull
+    open lateinit var schema: String
 }

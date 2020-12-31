@@ -1,14 +1,13 @@
-package security
+package com.rss.security
 
-import config.JWTProperties
-import io.jsonwebtoken.Claims
+import com.rss.config.JWTProperties
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.SignatureException
 import io.jsonwebtoken.UnsupportedJwtException
-import model.Profile
+import com.rss.model.Profile
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.core.Authentication

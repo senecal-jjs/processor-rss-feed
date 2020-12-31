@@ -1,4 +1,4 @@
-package config
+package com.rss.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,10 +13,10 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import security.JwtAuthenticationEntryPoint
-import security.JwtAuthenticationFilter
-import security.JwtBuilder
-import security.RssUserDetailsService
+import com.rss.security.JwtAuthenticationEntryPoint
+import com.rss.security.JwtAuthenticationFilter
+import com.rss.security.JwtBuilder
+import com.rss.security.RssUserDetailsService
 
 @Configuration
 @EnableWebSecurity
@@ -60,8 +60,8 @@ open class SecurityConfig(
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/v1/auth/**").permitAll()
-            .antMatchers("/api/v1/user/checkUsernameAvailability", "/api/user/checkEmailAvailability").permitAll()
+            .antMatchers("/com/rss/api/v1/auth/**").permitAll()
+            .antMatchers("/com/rss/api/v1/user/checkUsernameAvailability", "/com/rss/api/v1/user/checkEmailAvailability").permitAll()
             .anyRequest().authenticated()
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)

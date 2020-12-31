@@ -1,4 +1,4 @@
-package data.json
+package com.rss.data.json
 
 import org.jetbrains.exposed.sql.ColumnType
 import org.postgresql.util.PGobject

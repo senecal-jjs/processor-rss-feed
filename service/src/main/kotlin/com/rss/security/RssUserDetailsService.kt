@@ -1,6 +1,6 @@
-package security
+package com.rss.security
 
-import data.Profile
+import com.rss.data.Profile
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
