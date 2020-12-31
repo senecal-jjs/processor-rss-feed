@@ -42,11 +42,23 @@ object Profile : Table("profile") {
             }
     }
 
-    fun saveUser(inUsername: String, inPassword: String) {
+    fun usernameExists(inUsername: String): Boolean = transaction {
+        Profile
+            .select { username eq inUsername }
+            .firstOrNull()
+            ?.let { true } ?: false
+    }
+
+    fun saveUser(
+        inUsername: String,
+        inPassword: String,
+        roles: MutableList<Role> = mutableListOf(Role.USER)
+    ) {
         transaction {
             Profile.insert {
                 it[username] = inUsername
                 it[password] = inPassword
+                it[authority] = Authority(roles = roles)
             }
         }
     }

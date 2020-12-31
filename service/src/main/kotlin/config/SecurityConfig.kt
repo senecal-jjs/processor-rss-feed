@@ -33,7 +33,7 @@ open class SecurityConfig(
     }
 
     @Bean
-    open fun passwordEncoder(): PasswordEncoder? {
+    open fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 
