@@ -18,17 +18,6 @@ open class JWTProperties {
     @NotNull open var expiresInMinutes: Int = 60
 }
 
-@ConfigurationProperties(prefix = "redis")
-@Validated
-open class RedisProperties {
-    @NotNull
-    open lateinit var host: String
-    @NotNull
-    open lateinit var port: String
-    @NotNull
-    open lateinit var connectionPoolSize: String
-}
-
 @ConfigurationProperties(prefix = "database")
 @Validated
 open class DatabaseProperties {
@@ -44,4 +33,6 @@ open class DatabaseProperties {
     open lateinit var port: Integer
     @NotNull
     open lateinit var schema: String
+    @NotNull
+    open lateinit var connectionPoolSize: String
 }
