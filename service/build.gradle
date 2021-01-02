@@ -38,6 +38,9 @@ dependencies {
     // exposed orm
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
 
+    // Rome for rss
+    compile "com.rometools:rome:$rome_version"
+
     // redis
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: "$springboot_starter_data_version"
 //    implementation group: 'org.springframework.session', name: 'spring-session-data-redis', version: "$spring_session_data_version"
