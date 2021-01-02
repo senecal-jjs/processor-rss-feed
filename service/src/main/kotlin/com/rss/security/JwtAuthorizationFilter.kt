@@ -34,12 +34,14 @@ class JwtAuthorizationFilter(
     }
 
     private fun getAuthentication(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
-        request.getHeader(jwtBuilder.jwtProperties.header)?.let { token ->
-            if (jwtBuilder.isTokenValid(token)) {
-                val userId = jwtBuilder.getUserIdFromToken(token)
-                return UsernamePasswordAuthenticationToken(userId, null, emptyList())
+        request.getHeader(jwtBuilder.jwtProperties.header)
+            ?.replace(jwtBuilder.jwtProperties.tokenPrefix, "")
+            ?.let { token ->
+                if (jwtBuilder.isTokenValid(token)) {
+                    val userId = jwtBuilder.getUserIdFromToken(token)
+                    return UsernamePasswordAuthenticationToken(userId, null, emptyList())
+                }
             }
-        }
         return null
     }
 }

@@ -16,27 +16,10 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class AuthController(
     private val passwordEncoder: PasswordEncoder,
-    private val jwtBuilder: JwtBuilder,
-    private val authenticationManager: AuthenticationManager
 ) {
     @GetMapping("/test")
     fun test(): ResponseEntity<String> {
         return ResponseEntity.ok("test success")
-    }
-
-    @PostMapping("/login")
-    fun authenticateUser(
-        @RequestBody loginRequest: LoginRequest
-    ): ResponseEntity<JwtAuthenticationResponse> {
-        val authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
-        )
-
-        SecurityContextHolder.getContext().authentication = authentication
-
-        return jwtBuilder.generateToken(authentication).let {
-            ResponseEntity.ok(JwtAuthenticationResponse(accessToken = it))
-        }
     }
 
     @PostMapping("/register")
