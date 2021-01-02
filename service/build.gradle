@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.springframework.boot' version '2.4.1'
 }
 
 group 'com.rss'
@@ -16,9 +17,16 @@ repositories {
     }
 }
 
+def profiles = System.getenv("SPRING_PROFILES_ACTIVE") ?: "development"
+
+bootRun {
+    args = ["--spring.profiles.active=" + profiles]
+}
+
 dependencies {
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // postgres
     implementation "org.postgresql:postgresql:$postgres_version"
@@ -27,11 +35,15 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed:$exposed_version"
 
     // redis
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: "$springboot_starter_data_version"
-    implementation group: 'org.springframework.session', name: 'spring-session-data-redis', version: "$spring_session_data_version"
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: "$springboot_starter_data_version"
+//    implementation group: 'org.springframework.session', name: 'spring-session-data-redis', version: "$spring_session_data_version"
 
     // jwt
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: "$jjwt_version"
+    compile 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+            //'org.bouncycastle:bcprov-jdk15on:1.60',
+            'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // hikari
     implementation group: 'com.zaxxer', name: 'HikariCP', version: "$hikari_version"
@@ -41,7 +53,6 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.9"
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // Spring
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "$springboot_version"

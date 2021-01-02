@@ -5,19 +5,22 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.SignatureException
 import io.jsonwebtoken.UnsupportedJwtException
 import com.rss.model.Profile
+import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.SecurityException
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import java.security.Key
 import java.util.*
 
 @Component
 @EnableConfigurationProperties(JWTProperties::class)
-class JwtBuilder(private val jwtProperties: JWTProperties) {
+class JwtBuilder(val jwtProperties: JWTProperties) {
     private val logger = LoggerFactory.getLogger(JwtBuilder::class.java)
+    private val secretKey: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
     fun generateToken(authentication: Authentication): String {
         val userPrincipal: Profile = authentication.principal as Profile
@@ -29,13 +32,14 @@ class JwtBuilder(private val jwtProperties: JWTProperties) {
             .claim("ROLES", userPrincipal.authorities)
             .setIssuedAt(Date())
             .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, jwtProperties.privateKey)
+            .signWith(secretKey, SignatureAlgorithm.HS512)
             .compact()
     }
 
     fun getUserIdFromToken(token: String): UUID {
-        return Jwts.parser()
-            .setSigningKey(jwtProperties.privateKey)
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
             .parseClaimsJws(token)
             .body
             .let {
@@ -45,12 +49,13 @@ class JwtBuilder(private val jwtProperties: JWTProperties) {
 
     fun isTokenValid(token: String): Boolean {
         try {
-            Jwts.parser()
-                .setSigningKey(jwtProperties.privateKey)
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
 
             return true
-        } catch (e: SignatureException) {
+        } catch (e: SecurityException) {
             logger.error("Invalid JWT signature");
         } catch (e: MalformedJwtException) {
             logger.error("Invalid JWT token");

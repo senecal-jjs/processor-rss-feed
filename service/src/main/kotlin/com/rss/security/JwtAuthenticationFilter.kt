@@ -1,11 +1,22 @@
 package com.rss.security
 
+import com.rss.api.LoginRequest
+import com.rss.config.JWTProperties
+import com.rss.data.json.OBJECT_MAPPER
+import com.rss.data.Profile
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
+import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
+import java.io.IOException
+import java.lang.RuntimeException
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -13,42 +24,36 @@ import kotlin.Exception
 
 class JwtAuthenticationFilter(
     private val jwtBuilder: JwtBuilder,
-    private val rssUserDetailsService: RssUserDetailsService
-): OncePerRequestFilter() {
+    authenticationManager: AuthenticationManager
+): UsernamePasswordAuthenticationFilter(authenticationManager) {
     private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
 
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
-    ) {
+    override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         try {
-            getJwtFromRequest(request)
-                ?.also { token ->
-                    if (StringUtils.hasText(token) && jwtBuilder.isTokenValid(token)) {
-                        jwtBuilder.getUserIdFromToken(token).run {
-                            val profile = rssUserDetailsService.loadUserById(this)
-                            val authentication = UsernamePasswordAuthenticationToken(profile, null, profile.authorities)
-                            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+            val credentials = OBJECT_MAPPER.readValue(request.inputStream, LoginRequest::class.java)
 
-                            SecurityContextHolder.getContext().authentication = authentication
-                        }
-                    }
-                }
-        } catch (e: Exception) {
-            logger.error("Could not set user auth in security context, $e")
+            Profile.getUserByUsername(credentials.username)?.let { profile ->
+                return authenticationManager.authenticate(
+                    UsernamePasswordAuthenticationToken(
+                        profile.username,
+                        credentials.password,
+                        profile.authorities
+                    )
+                )
+            } ?: throw RuntimeException("Could not get user by username ${credentials.username}")
+
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
     }
 
-    private fun getJwtFromRequest(request: HttpServletRequest): String? {
-        request
-            .getHeader("Authorization")
-            .let { token ->
-                return if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-                    token.substring(7, token.length)
-                } else {
-                    null
-                }
-            }
+    override fun successfulAuthentication(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        chain: FilterChain,
+        authResult: Authentication
+    ) {
+        val token = jwtBuilder.generateToken(authResult)
+        response.addHeader(jwtBuilder.jwtProperties.header, jwtBuilder.jwtProperties.tokenPrefix + token)
     }
 }

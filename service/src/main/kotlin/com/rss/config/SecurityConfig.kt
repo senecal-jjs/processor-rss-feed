@@ -1,5 +1,6 @@
 package com.rss.config
 
+import com.rss.security.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -13,28 +14,28 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import com.rss.security.JwtAuthenticationEntryPoint
-import com.rss.security.JwtAuthenticationFilter
-import com.rss.security.JwtBuilder
-import com.rss.security.RssUserDetailsService
+import org.springframework.http.HttpMethod
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 open class SecurityConfig(
-    private val rssUserDetailsService: RssUserDetailsService,
-    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtBuilder: JwtBuilder,
-    private val unauthorizedHandler: JwtAuthenticationEntryPoint
+    private val rssUserDetailsService: RssUserDetailsService,
 ) : WebSecurityConfigurerAdapter() {
-    @Bean
-    open fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtBuilder, rssUserDetailsService)
-    }
-
     @Bean
     open fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    open fun corsConfigurationSource(): CorsConfigurationSource {
+        val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        return source
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -51,19 +52,12 @@ open class SecurityConfig(
     }
 
     override fun configure(http: HttpSecurity) {
-        http
-            .cors()
-            .and()
-            .csrf().disable()
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeRequests()
-            .antMatchers("/com/rss/api/v1/auth/**").permitAll()
-            .antMatchers("/com/rss/api/v1/user/checkUsernameAvailability", "/com/rss/api/v1/user/checkEmailAvailability").permitAll()
+        http.cors().and().csrf().disable().authorizeRequests()
+            .antMatchers(HttpMethod.POST, "/register").permitAll()
             .anyRequest().authenticated()
-
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            .and()
+            .addFilter(JwtAuthenticationFilter(jwtBuilder, authenticationManager()))
+            .addFilter(JwtAuthorizationFilter(jwtBuilder, authenticationManager()))
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 }

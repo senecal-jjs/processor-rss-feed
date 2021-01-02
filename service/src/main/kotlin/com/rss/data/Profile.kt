@@ -56,6 +56,7 @@ object Profile : Table("profile") {
     ) {
         transaction {
             Profile.insert {
+                it[id] = UUID.randomUUID()
                 it[username] = inUsername
                 it[password] = inPassword
                 it[authority] = Authority(roles = roles)

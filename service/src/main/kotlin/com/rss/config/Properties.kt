@@ -10,12 +10,14 @@ import java.security.Key
 @ConfigurationProperties(prefix = "jwt")
 @Validated
 open class JWTProperties {
-    @NotNull open var privateKey: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @NotNull open lateinit var privateKey: String
     @NotNull open lateinit var publicKey: String
     @NotNull open lateinit var issuer: String
     @NotNull open lateinit var url: String
     @NotNull open lateinit var endpoint: String
     @NotNull open var expiresInMinutes: Int = 60
+    @NotNull open var tokenPrefix: String = "Bearer "
+    @NotNull open var header: String = "Authorization"
 }
 
 @ConfigurationProperties(prefix = "database")
