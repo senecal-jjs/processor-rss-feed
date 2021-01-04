@@ -53,7 +53,7 @@ open class SecurityConfig(
 
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/register").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilter(JwtAuthenticationFilter(jwtBuilder, authenticationManager()))

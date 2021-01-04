@@ -14,12 +14,18 @@ import com.rss.security.JwtBuilder
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/api/v1/auth")
 class AuthController(
     private val passwordEncoder: PasswordEncoder,
 ) {
     @GetMapping("/test")
     fun test(): ResponseEntity<String> {
         return ResponseEntity.ok("test success")
+    }
+
+    @GetMapping("/isAuthenticated")
+    fun isAuthenticated(): ResponseEntity<String> {
+        return ResponseEntity.ok("User authenticated")
     }
 
     @PostMapping("/register")
