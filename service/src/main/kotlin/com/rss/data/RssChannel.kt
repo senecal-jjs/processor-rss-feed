@@ -2,6 +2,7 @@ package com.rss.data
 
 import com.rss.data.json.JsonBColumnType
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
@@ -13,13 +14,6 @@ object RssChannel : Table("rss_channel") {
     val channelUrl = text("channel_url")
     val channelDesc = text("channel_desc")
     val topics = RssChannel.registerColumn<Topics>("topics", object : JsonBColumnType<Topics>() {})
-
-    fun isChannelSaved(url: String): Boolean = transaction {
-        RssChannel
-            .select { channelUrl eq url }
-            .firstOrNull()
-            ?.let { true } ?: false
-    }
 
     fun getChannelIdByUrl(url: String): UUID? = transaction {
         RssChannel
@@ -33,11 +27,22 @@ object RssChannel : Table("rss_channel") {
         inSiteUrl: String,
         inChannelUrl: String,
         inChannelDesc: String,
-        topics: Topics
-    ) {
-        transaction {
+        inTopics: Topics
+    ): UUID {
+        val channelId = UUID.randomUUID()
 
+        transaction {
+            RssChannel.insert {
+                it[id] = channelId
+                it[title] = inTitle
+                it[siteUrl] = inSiteUrl
+                it[channelUrl] = inChannelUrl
+                it[channelDesc] = inChannelDesc
+                it[topics] = inTopics
+            }
         }
+
+        return channelId
     }
 }
 
