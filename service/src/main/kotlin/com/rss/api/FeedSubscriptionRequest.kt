@@ -1,6 +1,6 @@
 package com.rss.api
 
 data class FeedSubscriptionRequest (
-    val channelUrl: String,
+    val url: String,
     val category: String
 )
