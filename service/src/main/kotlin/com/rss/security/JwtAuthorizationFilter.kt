@@ -26,8 +26,8 @@ class JwtAuthorizationFilter(
 
         getAuthentication(request)?.run {
             SecurityContextHolder.getContext().authentication = this
-            chain.doFilter(request, response)
         }
+        chain.doFilter(request, response)
     }
 
     private fun getAuthentication(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
