@@ -1,6 +1,9 @@
 package com.rss.web
 
 import com.rss.api.FeedSubscriptionRequest
+import com.rss.data.RssChannel
+import com.rss.data.Subscription
+import com.rss.security.Session
 import com.rss.service.RssSearchService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,6 +26,15 @@ class FeedController(private val rssSearchService: RssSearchService) {
     fun registerFeed(
         @RequestBody feedSubscriptionRequest: FeedSubscriptionRequest
     ) {
+        val channelId = RssChannel.getChannelIdByUrl(feedSubscriptionRequest.url)
 
+        channelId?.run {
+            Subscription.subscribe(
+                Session.uuid(),
+                channelId,
+                feedSubscriptionRequest.url,
+                feedSubscriptionRequest.category
+            )
+        }
     }
 }
