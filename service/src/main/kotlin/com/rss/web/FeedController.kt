@@ -1,6 +1,10 @@
 package com.rss.web
 
+import com.rss.api.FeedResponse
 import com.rss.api.FeedSubscriptionRequest
+import com.rss.api.RssChannelResponse
+import com.rss.api.RssItemResponse
+import com.rss.api.UserSubscriptionResponse
 import com.rss.data.RssChannel
 import com.rss.data.Subscription
 import com.rss.data.Topics
@@ -45,5 +49,54 @@ class FeedController(
             feedSubscriptionRequest.url,
             feedSubscriptionRequest.category
         )
+    }
+
+    @GetMapping("/get-feeds")
+    fun getFeeds(): UserSubscriptionResponse {
+        val subs = Subscription.getSubscriptions(Session.uuid())
+        val categories = subs.map { it.category }.distinct()
+        val feeds = categories.map { currentCategory ->
+            FeedResponse(
+                category = currentCategory,
+                channels = subs
+                    .filter { it.category == currentCategory }
+                    .map {
+                        rssReaderService.getFeed(it.channelUrl).let { syndFeed ->
+                            RssChannelResponse(
+                                title = syndFeed.title,
+                                siteUrl = syndFeed.link,
+                                description = syndFeed.description,
+                                pubDate = syndFeed.publishedDate,
+                                lastBuildDate = syndFeed.publishedDate,
+                                imageUrl = syndFeed.image.url,
+                                items = syndFeed.entries.map { entry ->
+                                    RssItemResponse(
+                                        title = entry.title,
+                                        itemUrl = entry.link,
+                                        author = entry.author,
+                                        description = entry.description.value,
+                                        pubDate = entry.publishedDate,
+                                        content = entry.contents.first().value
+                                    )
+                                }
+
+
+                            )
+                        }
+                    }
+            )
+
+        }
+
+
+//            .map {
+//                Feed(
+//                    category = it.category,
+//                    channels = rssReaderService.getFeed(it.channelUrl)
+//                )
+//            }
+
+
+
     }
 }

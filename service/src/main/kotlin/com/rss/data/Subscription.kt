@@ -1,5 +1,10 @@
 package com.rss.data
 
+import com.rss.model.Subscription as SubscriptionModel
+import org.jetbrains.exposed.dao.EntityID
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.UUIDEntityClass
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.insert
@@ -21,17 +26,36 @@ object Subscription : Table("subscription") {
         inCategory: String
     ) {
         transaction {
-            Subscription.insert {
-                it[id] = UUID.randomUUID()
-                it[profileId] = inProfileId
-                it[channelId] = inChannelId
-                it[channelUrl] = inChannelUrl
-                it[category] = inCategory
+            if (!isSubscribed(inProfileId, inChannelUrl)) {
+                Subscription.insert {
+                    it[id] = UUID.randomUUID()
+                    it[profileId] = inProfileId
+                    it[channelId] = inChannelId
+                    it[channelUrl] = inChannelUrl
+                    it[category] = inCategory
+                }
             }
         }
     }
 
-    fun isSubscribed(
+    fun getSubscriptions(
+        inProfileId: UUID
+    ): List<SubscriptionModel> = transaction {
+        Subscription
+            .select { profileId eq inProfileId }
+            .toList()
+            .map {
+                SubscriptionModel(
+                    id = it[id],
+                    profileId = it[profileId],
+                    channelId = it[channelId],
+                    channelUrl = it[channelUrl],
+                    category = it[category]
+                )
+            }
+    }
+
+    private fun isSubscribed(
         inProfileId: UUID,
         inChannelUrl: String
     ): Boolean {
