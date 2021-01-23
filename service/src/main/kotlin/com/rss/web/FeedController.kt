@@ -8,6 +8,7 @@ import com.rss.api.UserSubscriptionResponse
 import com.rss.data.RssChannel
 import com.rss.data.Subscription
 import com.rss.data.Topics
+import com.rss.extension.toOffsetDateTime
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
@@ -66,8 +67,8 @@ class FeedController(
                                 title = syndFeed.title,
                                 siteUrl = syndFeed.link,
                                 description = syndFeed.description,
-                                pubDate = syndFeed.publishedDate,
-                                lastBuildDate = syndFeed.publishedDate,
+                                pubDate = syndFeed.publishedDate.toOffsetDateTime(),
+                                lastBuildDate = syndFeed.publishedDate.toOffsetDateTime(),
                                 imageUrl = syndFeed.image.url,
                                 items = syndFeed.entries.map { entry ->
                                     RssItemResponse(
@@ -75,28 +76,16 @@ class FeedController(
                                         itemUrl = entry.link,
                                         author = entry.author,
                                         description = entry.description.value,
-                                        pubDate = entry.publishedDate,
+                                        pubDate = entry.publishedDate.toOffsetDateTime(),
                                         content = entry.contents.first().value
                                     )
                                 }
-
-
                             )
                         }
                     }
             )
-
         }
 
-
-//            .map {
-//                Feed(
-//                    category = it.category,
-//                    channels = rssReaderService.getFeed(it.channelUrl)
-//                )
-//            }
-
-
-
+        return UserSubscriptionResponse(feeds = feeds)
     }
 }
