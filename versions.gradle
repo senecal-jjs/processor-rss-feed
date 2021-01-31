@@ -1,6 +1,6 @@
 ext {
-    dl4j_version = '1.0.0-beta6'
-    nd4j_version = '1.0.0-beta6'
+    dl4j_version = '1.0.0-beta7'
+    nd4j_version = '1.0.0-beta7'
     exposed_version = '0.17.7'
     hikari_version='3.4.5'
     jackson_version = '2.9.7'

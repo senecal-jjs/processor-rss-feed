@@ -24,7 +24,7 @@ class JwtBuilder(val jwtProperties: JWTProperties) {
 
     fun generateToken(authentication: Authentication): String {
         val userPrincipal: Profile = authentication.principal as Profile
-        val expiryDate = Date(Date().time + (jwtProperties.expiresInMinutes * 60 * 60))
+        val expiryDate = Date(Date().time + (jwtProperties.expiresInMinutes * 120 * 60))
 
         return Jwts.builder()
             .setSubject(userPrincipal.getId().toString())
