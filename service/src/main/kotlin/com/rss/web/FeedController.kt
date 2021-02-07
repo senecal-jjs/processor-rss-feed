@@ -28,8 +28,8 @@ class FeedController(
     @GetMapping("/search-feeds")
     fun searchFeeds(
         @RequestParam searchTerm: String
-    ) {
-
+    ): List<RssChannelResponse> {
+        return rssSearchService.searchFeeds(searchTerm)
     }
 
     @PostMapping("/register-feed")

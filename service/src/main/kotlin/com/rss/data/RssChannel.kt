@@ -11,21 +11,9 @@ import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.UUIDTable
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
-
-//object AggregateStore : UUIDTable("crm_aggregate") {
-//    val aggregation: Column<AggRecord> = proto("agg", AggRecord.getDefaultInstance())
-//    val retry: Column<Boolean> = bool("retry")
-//}
-//
-//class AggregateRecord(id: EntityID<UUID>) : UUIDEntity(id) {
-//    companion object : UUIDEntityClass<AggregateRecord>(
-//        AggregateStore
-//    )
-//
-//    var aggregation by AggregateStore.aggregation
-//    var retry by AggregateStore.retry
-//}
 
 object RssChannel : UUIDTable("rss_channel") {
     val title = text("title")
@@ -33,6 +21,13 @@ object RssChannel : UUIDTable("rss_channel") {
     val channelUrl = text("channel_url")
     val channelDesc = text("channel_desc")
     val topics = RssChannel.registerColumn<Topics>("topics", object : JsonBColumnType<Topics>() {})
+
+    fun getChannelIdByUrl(url: String): UUID? = transaction {
+        RssChannel
+            .select { channelUrl eq url }
+            .firstOrNull()
+            ?.let { it[id].value }
+    }
 }
 
 class RssChannelRecord(id: EntityID<UUID>) : UUIDEntity(id) {
