@@ -1,26 +1,68 @@
 package com.rss.service
 
 import com.rss.api.RssChannelResponse
-// import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer
+import com.rss.data.RssChannel
+import com.rss.extension.toUuid
+import kong.unirest.HttpResponse
+import kong.unirest.Unirest
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.io.File
+import java.util.*
 
 @Service
 @EnableScheduling
 class RssSearchService {
     private val logger = LoggerFactory.getLogger(RssSearchService::class.java)
-//    val model = WordVectorSerializer.loadTxtVectors(File("/Users/jacobsenecal/Repos/Personal/processor-rss-feed/service/src/main/kotlin/com/rss/service/glove.6B/glove.6B.100d.txt"))
-//    val vec = model.getWordVector("technology")
-//
-//    @Scheduled(fixedRate = 5000L)
-//    fun printVec() {
-//        logger.info("tech vector $vec")
-//    }
 
-//    fun searchFeeds(searchTerm: String): List<RssChannelResponse> {
-//
-//    }
+
+    fun searchFeeds(searchTerm: String): List<RssChannelResponse> {
+        val scores: MutableList<Score> = mutableListOf()
+
+        Unirest.get("http://localhost:5000/$searchTerm")
+            .asJson()
+            .ifSuccess { response ->
+                response.body.`object`.let { result ->
+                    result.keys().forEach {
+                        scores.add(
+                            Score(
+                                id = it.toUuid(),
+                                score = result[it].toString().toFloat()
+                            )
+                        )
+                    }
+                }
+            }
+            .ifFailure { response ->
+                response.parsingError.ifPresent { e ->
+                    logger.error("Parsing exception $e")
+                }
+            }
+
+        scores.sortBy { it.score }
+        val top5 = scores
+            .map { it.id }.slice(0..5)
+
+        return findExactMatch(searchTerm)?.let {
+            (top5 + it).map {  }
+        }
+    }
+
+    private fun MutableList<Score>.getMax(): Score? {
+        return this.maxByOrNull { it.score }
+    }
+
+    private fun findExactMatch(searchTerm: String): UUID? {
+        RssChannel.getAllChannelUrlsAndId().forEach {
+            if (it.second.toLowerCase().replace(" ", "") == searchTerm.toLowerCase().replace(" ", "")) {
+                return it.first
+            }
+        }
+        return null
+    }
 }
+
+data class Score(
+    val id: UUID,
+    val score: Float
+)

@@ -1,9 +1,11 @@
 package com.rss.data
 
 import com.rss.data.json.JsonBColumnType
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -20,6 +22,14 @@ object RssChannel : Table("rss_channel") {
             .select { channelUrl eq url }
             .firstOrNull()
             ?.let { it[id] }
+    }
+
+    fun getChannelById(id: UUID): List<ResultRow>
+
+    fun getAllChannelUrlsAndId(): List<Pair<UUID, String>> = transaction {
+        RssChannel
+            .selectAll()
+            .map { Pair(it[id], it[channelUrl]) }
     }
 
     fun save(
