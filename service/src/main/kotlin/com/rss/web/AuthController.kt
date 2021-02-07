@@ -1,6 +1,6 @@
 package com.rss.web
 
-import com.rss.api.SignUpRequest
+import com.rss.api.request.SignUpRequest
 import com.rss.data.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

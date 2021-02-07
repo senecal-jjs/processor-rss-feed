@@ -1,4 +1,4 @@
-package com.rss.api
+package com.rss.api.response
 
 import java.time.OffsetDateTime
 
@@ -13,12 +13,12 @@ data class FeedResponse(
 
 data class RssChannelResponse(
     val title: String,
-    val siteUrl: String,
+    val siteUrl: String? = null,
     val description: String,
-    val pubDate: OffsetDateTime,
-    val lastBuildDate: OffsetDateTime,
-    val imageUrl: String,
-    val items: List<RssItemResponse>
+    val pubDate: OffsetDateTime? = null,
+    val lastBuildDate: OffsetDateTime? = null,
+    val imageUrl: String? = null,
+    val items: List<RssItemResponse>? = null
 )
 
 data class RssItemResponse (

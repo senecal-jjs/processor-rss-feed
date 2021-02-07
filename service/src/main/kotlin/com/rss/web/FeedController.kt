@@ -1,10 +1,10 @@
 package com.rss.web
 
-import com.rss.api.FeedResponse
-import com.rss.api.FeedSubscriptionRequest
-import com.rss.api.RssChannelResponse
-import com.rss.api.RssItemResponse
-import com.rss.api.UserSubscriptionResponse
+import com.rss.api.response.FeedResponse
+import com.rss.api.request.FeedSubscriptionRequest
+import com.rss.api.response.RssChannelResponse
+import com.rss.api.response.RssItemResponse
+import com.rss.api.response.UserSubscriptionResponse
 import com.rss.data.RssChannel
 import com.rss.data.Subscription
 import com.rss.data.Topics

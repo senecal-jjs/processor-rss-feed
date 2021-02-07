@@ -1,4 +1,4 @@
-package com.rss.api
+package com.rss.api.response
 
 data class JwtAuthenticationResponse(
     val accessToken: String,

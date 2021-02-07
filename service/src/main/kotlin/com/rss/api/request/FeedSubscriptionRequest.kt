@@ -1,4 +1,4 @@
-package com.rss.api
+package com.rss.api.request
 
 data class FeedSubscriptionRequest (
     val url: String,
