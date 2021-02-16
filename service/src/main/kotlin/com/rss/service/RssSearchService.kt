@@ -19,7 +19,7 @@ class RssSearchService {
     fun searchFeeds(searchTerm: String): List<RssChannelResponse> {
         val scores: MutableList<Score> = mutableListOf()
 
-        Unirest.get("http://localhost:5000/$searchTerm")
+        Unirest.get("http://localhost:5000/similarity-search/$searchTerm")
             .asJson()
             .ifSuccess { response ->
                 response.body.`object`.let { result ->
@@ -53,11 +53,10 @@ class RssSearchService {
     }
 
     private fun findExactMatch(searchTerm: String): RssChannelResponse? = transaction {
-        RssChannelRecord.find {
-            RssChannel.channelUrl eq searchTerm
-        }
-        .firstOrNull()
-        ?.toResponse()
+        RssChannelRecord
+            .find { RssChannel.channelUrl eq searchTerm }
+            .firstOrNull()
+            ?.toResponse()
     }
 }
 
