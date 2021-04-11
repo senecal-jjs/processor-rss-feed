@@ -13,6 +13,7 @@ data class FeedResponse(
 
 data class RssChannelResponse(
     val title: String,
+    val channelUrl: String,
     val siteUrl: String? = null,
     val description: String,
     val pubDate: OffsetDateTime? = null,

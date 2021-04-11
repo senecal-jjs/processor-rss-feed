@@ -22,20 +22,20 @@ class RssSearchService {
      */
     fun fuzzySearch(
         searchTerm: String,
-        channels: SizedIterable<RssChannelRecord>,
         limit: Int = 5
     ): List<RssChannelResponse> {
         val topResults = mutableListOf<Pair<Int, RssChannelResponse>>()
+        val channels: List<RssChannelRecord> = transaction { RssChannelRecord.all().toList() }
         var thresholdScore = 0
 
         channels.forEach { channel ->
             getHighestScoreFromList(
-                channel.topicItem.topics + channel.title + channel.channelUrl + channel.channelDesc,
+                channel.topicItem.topics + channel.title.split(" ") + channel.channelUrl + channel.channelDesc.split(" "),
                 searchTerm
             ).let { highScore ->
                 if (topResults.size >= limit) {
                     if (highScore > thresholdScore) {
-                        topResults.sortBy { it.first }
+                        topResults.sortByDescending { it.first }
                         topResults[topResults.size - 1] = Pair(highScore, channel.toResponse())
                     }
                 } else {

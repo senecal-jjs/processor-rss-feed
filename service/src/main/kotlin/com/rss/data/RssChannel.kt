@@ -45,6 +45,7 @@ class RssChannelRecord(id: EntityID<UUID>) : UUIDEntity(id) {
         return RssChannelResponse(
             title = title,
             siteUrl = siteUrl,
+            channelUrl = channelUrl,
             description = channelDesc
         )
     }

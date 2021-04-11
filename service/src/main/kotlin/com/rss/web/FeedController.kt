@@ -13,6 +13,7 @@ import com.rss.extension.toOffsetDateTime
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -30,7 +31,7 @@ class FeedController(
     fun searchFeeds(
         @RequestParam searchTerm: String
     ): List<RssChannelResponse> {
-        return rssSearchService.fuzzySearch(searchTerm, RssChannelRecord.all())
+        return rssSearchService.fuzzySearch(searchTerm)
     }
 
     @PostMapping("/register-feed")
@@ -67,6 +68,7 @@ class FeedController(
                             RssChannelResponse(
                                 title = syndFeed.title,
                                 siteUrl = syndFeed.link,
+                                channelUrl = it.channelUrl,
                                 description = syndFeed.description,
                                 pubDate = syndFeed.publishedDate.toOffsetDateTime(),
                                 lastBuildDate = syndFeed.publishedDate.toOffsetDateTime(),

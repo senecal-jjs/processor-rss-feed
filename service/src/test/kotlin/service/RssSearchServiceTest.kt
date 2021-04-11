@@ -29,9 +29,16 @@ class RssSearchServiceTest {
                 channelDesc = "Top 10 golf plays"
             }
 
+            RssChannelRecord.new(UUID.randomUUID()) {
+                topicItem = TopicItem(topics = listOf("golf, sports, espn"))
+                title = "ESPN TOP 10"
+                channelUrl = "https://www.espn.com"
+                channelDesc = "Top 10 basketball players"
+            }
 
-            searchService.fuzzySearch("basketball", RssChannelRecord.all(), limit = 1).run {
-                Assertions.assertEquals(this.first().description, "Top 10 basketball plays")
+            searchService.fuzzySearch("basketball", limit = 2).run {
+                Assertions.assertEquals("Top 10 basketball plays", this.first().description)
+                Assertions.assertEquals("Top 10 basketball players", this[1].description)
             }
         }
     }
