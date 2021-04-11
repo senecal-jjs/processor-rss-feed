@@ -6,8 +6,9 @@ import com.rss.api.response.RssChannelResponse
 import com.rss.api.response.RssItemResponse
 import com.rss.api.response.UserSubscriptionResponse
 import com.rss.data.RssChannel
+import com.rss.data.RssChannelRecord
 import com.rss.data.Subscription
-import com.rss.data.Topics
+import com.rss.data.TopicItem
 import com.rss.extension.toOffsetDateTime
 import com.rss.security.Session
 import com.rss.service.RssReaderService
@@ -29,7 +30,7 @@ class FeedController(
     fun searchFeeds(
         @RequestParam searchTerm: String
     ): List<RssChannelResponse> {
-        return rssSearchService.searchFeeds(searchTerm)
+        return rssSearchService.fuzzySearch(searchTerm, RssChannelRecord.all())
     }
 
     @PostMapping("/register-feed")
@@ -40,7 +41,7 @@ class FeedController(
         val channelId = RssChannel.getChannelIdByUrl(feedSubscriptionRequest.url) ?: let {
             rssReaderService.saveFeed(
                 feedSubscriptionRequest.url,
-                Topics(topics = listOf(feedSubscriptionRequest.category))
+                TopicItem(topics = listOf(feedSubscriptionRequest.category))
             )
         }
 

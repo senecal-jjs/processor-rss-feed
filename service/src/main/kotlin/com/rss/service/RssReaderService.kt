@@ -3,9 +3,8 @@ package com.rss.service
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
-import com.rss.data.RssChannel
 import com.rss.data.RssChannelRecord
-import com.rss.data.Topics
+import com.rss.data.TopicItem
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -18,7 +17,7 @@ class RssReaderService {
             .build(XmlReader(URL(url)))
     }
 
-    fun saveFeed(url: String, topics: Topics): UUID {
+    fun saveFeed(url: String, topics: TopicItem): UUID {
         val feed = getFeed(url)
 
         val id = UUID.randomUUID()
@@ -29,7 +28,7 @@ class RssReaderService {
                 this.siteUrl = feed.link
                 this.channelUrl = url
                 this.channelDesc = feed.description
-                this.topics = topics
+                this.topicItem = topics
             }
         }
 

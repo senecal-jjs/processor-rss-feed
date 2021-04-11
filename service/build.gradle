@@ -44,6 +44,9 @@ dependencies {
     // HTTP Client
     implementation "com.konghq:unirest-java:$unirest_version"
 
+    // Text similarity
+    implementation "org.apache.commons:commons-text:$apache_text_similarity_version"
+
     // redis
 //    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: "$springboot_starter_data_version"
 //    implementation group: 'org.springframework.session', name: 'spring-session-data-redis', version: "$spring_session_data_version"
