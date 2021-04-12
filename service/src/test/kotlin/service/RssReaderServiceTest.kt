@@ -11,6 +11,6 @@ class RssReaderServiceTest {
         val url = "http://feeds.arstechnica.com/arstechnica/index/"
 
         val feed = rssReaderService.getFeed(url)
-        println(feed)
+        println(feed.image.link)
     }
 }

@@ -15,7 +15,7 @@ open class JWTProperties {
     @NotNull open lateinit var issuer: String
     @NotNull open lateinit var url: String
     @NotNull open lateinit var endpoint: String
-    @NotNull open var expiresInMinutes: Int = 60
+    @NotNull open var expiresInMinutes: Int = 480
     @NotNull open var tokenPrefix: String = "Bearer "
     @NotNull open var header: String = "Authorization"
 }

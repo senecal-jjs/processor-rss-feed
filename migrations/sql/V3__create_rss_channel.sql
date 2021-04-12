@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS rss_channel(
     site_url TEXT,
     channel_url TEXT NOT NULL,
     channel_desc TEXT,
-    topics JSONB
+    topics JSONB,
+    image_url TEXT
 );
 
 INSERT INTO rss_channel (id, title, channel_url, channel_desc, topics) VALUES ('1979636c-bfde-4f6e-9737-8153c7ed7b83', 'Media | The Guardian', 'http://www.theguardian.com/media/rss', 'Latest news and features from theguardian.com, the world''s leading liberal voice', '{"topics": ["news", "journalism", "plex", "alerts", "cool", "events", "entertainment", "magazines"]}');

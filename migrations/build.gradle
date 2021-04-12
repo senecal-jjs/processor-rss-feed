@@ -17,5 +17,5 @@ flyway {
     user = 'postgres'
     password = 'password1'
     schemas = ['rss']
-    locations = ['filesystem:migrations/sql']
+    locations = ['filesystem:sql']
 }

@@ -20,6 +20,7 @@ object RssChannel : UUIDTable("rss_channel") {
     val siteUrl = text("site_url").nullable()
     val channelUrl = text("channel_url")
     val channelDesc = text("channel_desc")
+    val imageUrl = text("image_url")
     val topicItem = RssChannel.registerColumn<TopicItem>("topics", object : JsonBColumnType<TopicItem>() {})
 
     fun getChannelIdByUrl(url: String): UUID? = transaction {
@@ -39,6 +40,7 @@ class RssChannelRecord(id: EntityID<UUID>) : UUIDEntity(id) {
     var siteUrl by RssChannel.siteUrl
     var channelUrl by RssChannel.channelUrl
     var channelDesc by RssChannel.channelDesc
+    var imageUrl by RssChannel.imageUrl
     var topicItem by RssChannel.topicItem
 
     fun toResponse(): RssChannelResponse {

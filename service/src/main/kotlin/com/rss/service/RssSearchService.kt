@@ -1,5 +1,7 @@
 package com.rss.service
 
+import com.rometools.rome.feed.atom.Feed
+import com.rss.api.response.FeedSearchResponse
 import com.rss.api.response.RssChannelResponse
 import com.rss.data.RssChannel
 import com.rss.data.RssChannelRecord
@@ -23,7 +25,7 @@ class RssSearchService {
     fun fuzzySearch(
         searchTerm: String,
         limit: Int = 5
-    ): List<RssChannelResponse> {
+    ): FeedSearchResponse {
         val topResults = mutableListOf<Pair<Int, RssChannelResponse>>()
         val channels: List<RssChannelRecord> = transaction { RssChannelRecord.all().toList() }
         var thresholdScore = 0
@@ -45,13 +47,15 @@ class RssSearchService {
             }
         }
 
-        return (listOf(findExactMatch(searchTerm)) + topResults.map { it.second }).filterNotNull()
+        return FeedSearchResponse(
+            feeds = (listOf(findExactMatch(searchTerm)) + topResults.map { it.second }).filterNotNull()
+        )
     }
 
     /**
      * Perform a search taking into account the semantics of the query
      */
-    fun semanticSearch(searchTerm: String): List<RssChannelResponse> {
+    fun semanticSearch(searchTerm: String): FeedSearchResponse {
         val scores: MutableList<Score> = mutableListOf()
 
         Unirest.get("http://localhost:5000/similarity-search/$searchTerm")
@@ -84,7 +88,9 @@ class RssSearchService {
                 }
             }
 
-        return (listOf(findExactMatch(searchTerm)) + top5).filterNotNull()
+        return FeedSearchResponse(
+            feeds = (listOf(findExactMatch(searchTerm)) + top5).filterNotNull()
+        )
     }
 
     private fun findExactMatch(searchTerm: String): RssChannelResponse? = transaction {

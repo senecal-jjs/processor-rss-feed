@@ -2,18 +2,17 @@ package com.rss.web
 
 import com.rss.api.response.FeedResponse
 import com.rss.api.request.FeedSubscriptionRequest
+import com.rss.api.response.FeedSearchResponse
 import com.rss.api.response.RssChannelResponse
 import com.rss.api.response.RssItemResponse
 import com.rss.api.response.UserSubscriptionResponse
 import com.rss.data.RssChannel
-import com.rss.data.RssChannelRecord
 import com.rss.data.Subscription
 import com.rss.data.TopicItem
 import com.rss.extension.toOffsetDateTime
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -30,7 +29,7 @@ class FeedController(
     @GetMapping("/search-feeds")
     fun searchFeeds(
         @RequestParam searchTerm: String
-    ): List<RssChannelResponse> {
+    ): FeedSearchResponse {
         return rssSearchService.fuzzySearch(searchTerm)
     }
 

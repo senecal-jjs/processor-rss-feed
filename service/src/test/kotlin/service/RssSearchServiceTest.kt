@@ -37,8 +37,8 @@ class RssSearchServiceTest {
             }
 
             searchService.fuzzySearch("basketball", limit = 2).run {
-                Assertions.assertEquals("Top 10 basketball plays", this.first().description)
-                Assertions.assertEquals("Top 10 basketball players", this[1].description)
+                Assertions.assertEquals("Top 10 basketball plays", this.feeds.first().description)
+                Assertions.assertEquals("Top 10 basketball players", this.feeds[1].description)
             }
         }
     }
