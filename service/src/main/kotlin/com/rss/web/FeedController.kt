@@ -4,19 +4,16 @@ import com.rss.api.response.FeedResponse
 import com.rss.api.request.FeedSubscriptionRequest
 import com.rss.api.response.FeedSearchResponse
 import com.rss.api.response.RssChannelResponse
-import com.rss.api.response.RssItemResponse
 import com.rss.api.response.UserSubscriptionResponse
 import com.rss.data.RssChannel
 import com.rss.data.RssChannelRecord
 import com.rss.data.Subscription
 import com.rss.data.TopicItem
-import com.rss.extension.toOffsetDateTime
 import com.rss.extension.toRssChannelResponse
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
 import org.springframework.web.bind.annotation.*
-import toRssChannelResponse
 import java.util.*
 
 @RestController
@@ -62,9 +59,9 @@ class FeedController(
                 channels = subs
                     .filter { it.category == currentCategory }
                     .map {
-                        rssReaderService.getFeed(it.channelUrl).let { syndFeed ->
-                            syndFeed.toRssChannelResponse(it.channelId, it.channelUrl)
-                        }
+                        rssReaderService
+                            .getFeed(it.channelUrl)
+                            .toRssChannelResponse(it.channelId, it.channelUrl)
                     }
             )
         }
@@ -75,8 +72,12 @@ class FeedController(
     @GetMapping("/explore-feed/{channelId}")
     fun exploreFeed(
         @PathVariable channelId: UUID
-    ) {
-        RssChannelRecord.fin
+    ): RssChannelResponse? {
+        return RssChannelRecord.findById(channelId)?.let {
+            rssReaderService
+                .getFeed(it.channelUrl)
+                .toRssChannelResponse(channelId, it.channelUrl)
+        }
     }
 
 }
