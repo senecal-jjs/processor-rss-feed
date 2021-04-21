@@ -1,6 +1,7 @@
 package com.rss.api.response
 
 import java.time.OffsetDateTime
+import java.util.*
 
 data class UserSubscriptionResponse(
     val feeds: List<FeedResponse>
@@ -12,6 +13,7 @@ data class FeedResponse(
 )
 
 data class RssChannelResponse(
+    val id: UUID,
     val title: String,
     val channelUrl: String,
     val siteUrl: String? = null,

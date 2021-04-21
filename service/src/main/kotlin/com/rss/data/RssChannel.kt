@@ -45,11 +45,11 @@ class RssChannelRecord(id: EntityID<UUID>) : UUIDEntity(id) {
 
     fun toResponse(): RssChannelResponse {
         return RssChannelResponse(
+            id = id.value,
             title = title,
             siteUrl = siteUrl,
             channelUrl = channelUrl,
-            description = channelDesc,
-            imageUrl = imageUrl
+            description = channelDesc
         )
     }
 }

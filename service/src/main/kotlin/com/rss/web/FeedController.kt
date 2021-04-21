@@ -7,18 +7,17 @@ import com.rss.api.response.RssChannelResponse
 import com.rss.api.response.RssItemResponse
 import com.rss.api.response.UserSubscriptionResponse
 import com.rss.data.RssChannel
+import com.rss.data.RssChannelRecord
 import com.rss.data.Subscription
 import com.rss.data.TopicItem
 import com.rss.extension.toOffsetDateTime
+import com.rss.extension.toRssChannelResponse
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import toRssChannelResponse
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/feeds")
@@ -64,25 +63,7 @@ class FeedController(
                     .filter { it.category == currentCategory }
                     .map {
                         rssReaderService.getFeed(it.channelUrl).let { syndFeed ->
-                            RssChannelResponse(
-                                title = syndFeed.title,
-                                siteUrl = syndFeed.link,
-                                channelUrl = it.channelUrl,
-                                description = syndFeed.description,
-                                pubDate = syndFeed.publishedDate.toOffsetDateTime(),
-                                lastBuildDate = syndFeed.publishedDate.toOffsetDateTime(),
-                                imageUrl = syndFeed.image.url,
-                                items = syndFeed.entries.map { entry ->
-                                    RssItemResponse(
-                                        title = entry.title,
-                                        itemUrl = entry.link,
-                                        author = entry.author,
-                                        description = entry.description.value,
-                                        pubDate = entry.publishedDate.toOffsetDateTime(),
-                                        content = entry.contents.first().value
-                                    )
-                                }
-                            )
+                            syndFeed.toRssChannelResponse(it.channelId, it.channelUrl)
                         }
                     }
             )
@@ -90,4 +71,12 @@ class FeedController(
 
         return UserSubscriptionResponse(feeds = feeds)
     }
+
+    @GetMapping("/explore-feed/{channelId}")
+    fun exploreFeed(
+        @PathVariable channelId: UUID
+    ) {
+        RssChannelRecord.fin
+    }
+
 }
