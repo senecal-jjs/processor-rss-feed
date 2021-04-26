@@ -17,7 +17,7 @@ fun SyndFeed.toRssChannelResponse(
         description = this.description,
         pubDate = this.publishedDate.toOffsetDateTime(),
         lastBuildDate = this.publishedDate.toOffsetDateTime(),
-        imageUrl = this.image.url,
+        imageUrl = this.image?.url,
         items = this.entries.map { entry ->
             RssItemResponse(
                 title = entry.title,
@@ -25,7 +25,7 @@ fun SyndFeed.toRssChannelResponse(
                 author = entry.author,
                 description = entry.description.value,
                 pubDate = entry.publishedDate.toOffsetDateTime(),
-                content = entry.contents.first().value
+                content = entry.contents.firstOrNull()?.value
             )
         }
     )

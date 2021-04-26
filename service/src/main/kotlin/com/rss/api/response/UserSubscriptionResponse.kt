@@ -30,5 +30,5 @@ data class RssItemResponse (
     val author: String,
     val description: String,
     val pubDate: OffsetDateTime,
-    val content: String
+    val content: String?
 )

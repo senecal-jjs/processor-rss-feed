@@ -13,6 +13,7 @@ import com.rss.extension.toRssChannelResponse
 import com.rss.security.Session
 import com.rss.service.RssReaderService
 import com.rss.service.RssSearchService
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -73,10 +74,12 @@ class FeedController(
     fun exploreFeed(
         @PathVariable channelId: UUID
     ): RssChannelResponse? {
-        return RssChannelRecord.findById(channelId)?.let {
-            rssReaderService
-                .getFeed(it.channelUrl)
-                .toRssChannelResponse(channelId, it.channelUrl)
+        return transaction {
+            RssChannelRecord.findById(channelId)?.let {
+                rssReaderService
+                    .getFeed(it.channelUrl)
+                    .toRssChannelResponse(channelId, it.channelUrl)
+            }
         }
     }
 
