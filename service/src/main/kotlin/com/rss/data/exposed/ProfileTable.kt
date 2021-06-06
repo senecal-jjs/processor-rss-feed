@@ -1,4 +1,4 @@
-package com.rss.data
+package com.rss.data.exposed
 
 import com.rss.data.json.JsonBColumnType
 import org.jetbrains.exposed.sql.Table
@@ -8,18 +8,18 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import com.rss.security.Role
 import java.util.UUID
 
-object Profile : Table("profile") {
+object ProfileTable : Table("profile") {
     val id = uuid("id").primaryKey()
     val username = varchar("username", 50)
     val password = varchar("password", 300)
-    val authority = Profile.registerColumn<Authority>("authority", object : JsonBColumnType<Authority>() {})
+    val authority = ProfileTable.registerColumn<Authority>("authority", object : JsonBColumnType<Authority>() {})
 
-    fun getUserByUsername(inUsername: String): com.rss.model.Profile? = transaction {
-        Profile
+    fun getUserByUsername(inUsername: String): com.rss.data.model.Profile? = transaction {
+        ProfileTable
             .select { username eq inUsername }
             .firstOrNull()
             ?.let {
-                com.rss.model.Profile(
+                com.rss.data.model.Profile(
                     id = it[id],
                     username = it[username],
                     password = it[password],
@@ -28,12 +28,12 @@ object Profile : Table("profile") {
             }
     }
 
-    fun getUserById(userId: UUID): com.rss.model.Profile? = transaction {
-        Profile
+    fun getUserById(userId: UUID): com.rss.data.model.Profile? = transaction {
+        ProfileTable
             .select { id eq userId }
             .firstOrNull()
             ?.let {
-                com.rss.model.Profile(
+                com.rss.data.model.Profile(
                     id = it[id],
                     username = it[username],
                     password = it[password],
@@ -43,7 +43,7 @@ object Profile : Table("profile") {
     }
 
     fun usernameExists(inUsername: String): Boolean = transaction {
-        Profile
+        ProfileTable
             .select { username eq inUsername }
             .firstOrNull()
             ?.let { true } ?: false
@@ -55,7 +55,7 @@ object Profile : Table("profile") {
         roles: MutableList<Role> = mutableListOf(Role.USER)
     ) {
         transaction {
-            Profile.insert {
+            ProfileTable.insert {
                 it[id] = UUID.randomUUID()
                 it[username] = inUsername
                 it[password] = inPassword

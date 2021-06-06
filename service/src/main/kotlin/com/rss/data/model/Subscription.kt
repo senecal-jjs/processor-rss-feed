@@ -1,4 +1,4 @@
-package com.rss.model
+package com.rss.data.model
 
 import java.util.*
 

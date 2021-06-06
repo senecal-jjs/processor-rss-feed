@@ -1,8 +1,8 @@
 package service
 
-import com.rss.data.RssChannel
-import com.rss.data.RssChannelRecord
-import com.rss.data.TopicItem
+import com.rss.data.exposed.RssChannel
+import com.rss.data.exposed.RssChannelRecord
+import com.rss.data.exposed.TopicItem
 import com.rss.service.RssSearchService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

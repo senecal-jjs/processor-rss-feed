@@ -2,7 +2,7 @@ package com.rss.security
 
 import com.rss.api.request.LoginRequest
 import com.rss.data.json.OBJECT_MAPPER
-import com.rss.data.Profile
+import com.rss.data.exposed.Profile
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

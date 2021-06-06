@@ -5,10 +5,10 @@ import com.rss.api.request.FeedSubscriptionRequest
 import com.rss.api.response.FeedSearchResponse
 import com.rss.api.response.RssChannelResponse
 import com.rss.api.response.UserSubscriptionResponse
-import com.rss.data.RssChannel
-import com.rss.data.RssChannelRecord
-import com.rss.data.Subscription
-import com.rss.data.TopicItem
+import com.rss.data.domain.RssChannelRepository
+import com.rss.data.exposed.RssChannelRecord
+import com.rss.data.exposed.Subscription
+import com.rss.data.exposed.TopicItem
 import com.rss.extension.toRssChannelResponse
 import com.rss.security.Session
 import com.rss.service.RssReaderService
@@ -21,7 +21,8 @@ import java.util.*
 @RequestMapping("/api/v1/feeds")
 class FeedController(
     private val rssSearchService: RssSearchService,
-    private val rssReaderService: RssReaderService
+    private val rssReaderService: RssReaderService,
+    private val rssChannelRepository: RssChannelRepository
 ) {
     @GetMapping("/search-feeds")
     fun searchFeeds(
@@ -35,12 +36,14 @@ class FeedController(
         @RequestBody feedSubscriptionRequest: FeedSubscriptionRequest
     ) {
         // save new feed if it doesn't exist
-        val channelId = RssChannel.getChannelIdByUrl(feedSubscriptionRequest.url) ?: let {
-            rssReaderService.saveFeed(
-                feedSubscriptionRequest.url,
-                TopicItem(topics = listOf(feedSubscriptionRequest.category))
-            )
-        }
+        val channelId = rssChannelRepository
+            .fetchByUrl(feedSubscriptionRequest.url)?.id
+            ?: let {
+                rssReaderService.saveFeed(
+                    feedSubscriptionRequest.url,
+                    TopicItem(topics = listOf(feedSubscriptionRequest.category))
+                )
+            }
 
         Subscription.subscribe(
             Session.uuid(),

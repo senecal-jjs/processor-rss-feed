@@ -3,8 +3,8 @@ package com.rss.service
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
-import com.rss.data.RssChannelRecord
-import com.rss.data.TopicItem
+import com.rss.data.exposed.RssChannelRecord
+import com.rss.data.exposed.TopicItem
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service

@@ -1,10 +1,6 @@
-package com.rss.data
+package com.rss.data.exposed
 
-import com.rss.model.Subscription as SubscriptionModel
-import org.jetbrains.exposed.dao.EntityID
-import org.jetbrains.exposed.dao.UUIDEntity
-import org.jetbrains.exposed.dao.UUIDEntityClass
-import org.jetbrains.exposed.sql.ResultRow
+import com.rss.data.model.Subscription as SubscriptionModel
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.insert

@@ -1,17 +1,14 @@
 package com.rss.service
 
-import com.rometools.rome.feed.atom.Feed
 import com.rss.api.response.FeedSearchResponse
 import com.rss.api.response.RssChannelResponse
-import com.rss.data.RssChannel
-import com.rss.data.RssChannelRecord
+import com.rss.data.exposed.RssChannel
+import com.rss.data.exposed.RssChannelRecord
 import com.rss.extension.toUuid
 import kong.unirest.Unirest
 import org.apache.commons.text.similarity.FuzzyScore
-import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.stereotype.Service
 import java.util.*
 
